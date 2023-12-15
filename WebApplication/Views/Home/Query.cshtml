@@ -1,0 +1,117 @@
+﻿@model List<WebApplication.Models.PlayerTeamModel>
+@{
+    ViewBag.Title = "Query";
+}
+
+@using (Html.BeginForm("Query", "Home", FormMethod.Post))
+{
+    <head>
+
+    </head>
+    <body>
+        <div>
+            <input type="text" name="txtSearch" id="txtSearch" placeholder="請輸入球員姓名"/>
+            <input type="submit" name="btnSubmit" value="Search" class="btn btn-danger" id="btnSearch" />
+            <input type="button" name="btnSubmit" value="Add" class="btn btn-primary" id="btnAdd" />
+            <input type="submit" name="btnSubmit" value="Save" class="btn btn-success" id="btnSave" />
+        </div>
+        <div>
+            <table class="table" id="Table1">
+                <thead>
+                    <tr>
+                        <th>球員名稱</th>
+                        <th>所屬球隊</th>
+                        <th>所屬聯盟</th>
+                        <th>年齡</th>
+                        <th>身高</th>
+                        <th>體重</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <input type="text" name="Model[@i].PlayerName" value="@Model[i].PlayerName" readonly />
+                            </td>
+                            <td>
+                                <input type="text" name="Model[@i].TeamName" value="@Model[i].TeamName" readonly>
+                            </td>
+                            <td>
+                                <input type="text" name="Model[@i].League" value="@Model[i].League" readonly>
+                            </td>
+                            <td>
+                                <input type="text" name="Model[@i].Age" value="@Model[i].Age" readonly />
+                            </td>
+                            <td>
+                                <input type="text" name="Model[@i].Height" value="@Model[i].Height" readonly />
+                            </td>
+                            <td>
+                                <input type="text" name="Model[@i].Weight" value="@Model[i].Weight" readonly />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <script>
+            document.getElementById("btnAdd").addEventListener("click", function () {
+                var table = document.getElementById("Table1");
+                var existingRows = table.getElementsByTagName("tr").length;
+                if (existingRows < @Model.Count+2) {
+                    var newRow = table.insertRow(1);
+                    var cell1 = newRow.insertCell(0);
+                    var cell2 = newRow.insertCell(1);
+                    var cell3 = newRow.insertCell(2);
+                    var cell4 = newRow.insertCell(3);
+                    var cell5 = newRow.insertCell(4);
+                    var cell6 = newRow.insertCell(5);
+
+                    cell1.innerHTML = '<input type="text" name="Model[' + (@Model.Count) + '].PlayerName">';
+                    ////cell2.innerHTML = '<input type="text" name="Model[' + (@Model.Count) + '].TeamName">';
+                    ////cell3.innerHTML = '<input type="text" name="Model[' + (@Model.Count) + '].League">';
+                    cell4.innerHTML = '<input type="text" name="Model[' + (@Model.Count) + '].Age">';
+                    cell5.innerHTML = '<input type="text" name="Model[' + (@Model.Count) + '].Height">';
+                    cell6.innerHTML = '<input type="text" name="Model[' + (@Model.Count) + '].Weight">';
+                    cell2.innerHTML = '<select id="TeamName" name="Model[' + (@Model.Count) + '].TeamName" onchange="updateSecondSelect()">' +
+                        '<option value="KINGS">KINGS</option>' +
+                        '<option value="BRAVES">BRAVES</option>' +
+                        '<option value="PILOTS">PILOTS</option>' +
+                        '<option value="LIONEERS">LIONEERS</option>' +
+                        '<option value="DREAMERS">DREAMERS</option>' +
+                        '<option value="STEELERS">STEELERS</option>' +
+                        '<option value="DEA">DEA</option>' +
+                        '<option value="MARS">MARS</option>' +
+                        '<option value="LEOPARDS">LEOPARDS</option>' +
+                        '<option value="GHOSTHAWKS">GHOSTHAWKS</option>' +
+                        '<option value="AQUAS">AQUAS</option>' +
+                        '</select>';
+                    cell3.innerHTML = '<select id="League" name="Model[' + (@Model.Count) + '].League">' +
+                        '<option value="P+">P+</option>' +
+                        '<option value="T1">T1</option>' +
+                        '</select>';
+                }
+            });
+
+
+            function updateSecondSelect() {
+                var TeamName = document.getElementById('TeamName');
+                var League = document.getElementById('League');
+
+                // 根據第一個select的值動態添加選項到第二個select
+                if (TeamName.value === 'KINGS' || TeamName.value === 'BRAVES' ||
+                    TeamName.value === 'PILOTS' || TeamName.value === 'LIONEERS' ||
+                    TeamName.value === 'DREAMERS' || TeamName.value === 'STEELERS') {
+                    League.value = 'P+';
+                } else if (TeamName.value === 'DEA' || TeamName.value === 'MARS' ||
+                    TeamName.value === 'LEOPARDS' || TeamName.value === 'GHOSTHAWKS' ||
+                    TeamName.value === 'AQUAS') {
+                    League.value = 'T1';
+                }
+            }
+
+        </script>
+    </body>
+
+}
+
