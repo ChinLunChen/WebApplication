@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -25,20 +26,12 @@ namespace WebApplication.Controllers
             return View(modelList);
         }
 
-        public ActionResult Insert()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
         public ActionResult Edit()
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            PlayerTeamModel model = new PlayerTeamModel();
+            
+            return View(model);
         }
-
 
         [HttpPost]
         public ActionResult Query(string txtSearch, List<PlayerTeamModel> model, string btnSubmit)
@@ -72,6 +65,65 @@ namespace WebApplication.Controllers
             return View(modelList);
         }
 
+        [HttpPost]
+        public ActionResult Edit(PlayerTeamModel model, string txtSearchPlayerID, string btnSubmit)
+        {
+            PlayerTeamModel nModel = new PlayerTeamModel();
+            DataTable dt;
+            switch (btnSubmit)
+            {
+                case "Search":
+                    dt = ConnModel.SelectDatatableByID(txtSearchPlayerID);
+                    if (dt.Rows.Count == 0)
+                    {
+                        ViewBag.AlertMsg = "請輸入正確球員編號";
+                        return View(nModel);
+                    }
+                    nModel.PlayerID = Convert.ToInt32(dt.Rows[0]["PlayerID"]);
+                    nModel.PlayerName = dt.Rows[0]["PlayerName"].ToString();
+                    nModel.TeamName = dt.Rows[0]["TeamName"].ToString();
+                    nModel.League = dt.Rows[0]["League"].ToString();
+                    nModel.Age = Convert.ToInt32(dt.Rows[0]["Age"]);
+                    nModel.Height = Convert.ToInt32(dt.Rows[0]["Height"]);
+                    nModel.Weight = Convert.ToInt32(dt.Rows[0]["Weight"]);
+                    break;
+                case "Edit":
+                    int iPlayerID = model.PlayerID;
+                    string sPlayerName = model.PlayerName;
+                    string sTeamName = model.TeamName;
+                    int iAge = model.Age;
+                    int iHeight = model.Height;
+                    int iWeight = model.Weight;
+                    int iInsert = ConnModel.UpdateData(iPlayerID, sPlayerName, sTeamName, iAge, iHeight, iWeight);
+                    if (iInsert != 0)
+                    {
+                        ViewBag.AlertMsg = "修改完成";
+                        return View(nModel);
+                    }
+                    else
+                    {
+                        ViewBag.AlertMsg = "修改失敗";
+                        return View(nModel);
+                    }
+                case "Delete":
+                    iPlayerID = model.PlayerID;
+                     iInsert = ConnModel.DeleteData(iPlayerID);
+                    if (iInsert != 0)
+                    {
+                        ViewBag.AlertMsg = "刪除完成";
+                        return View(nModel);
+                    }
+                    else
+                    {
+                        ViewBag.AlertMsg = "刪除失敗";
+                        return View(nModel);
+                    }
+                default:
+                    break;
+            }
+            return View(nModel);
+        }
+
         public List<PlayerTeamModel> GetModelList(DataTable dt)
         {
             List<PlayerTeamModel> modelList = new List<PlayerTeamModel>();
@@ -80,6 +132,7 @@ namespace WebApplication.Controllers
             {
                 PlayerTeamModel Model = new PlayerTeamModel
                 {
+                    PlayerID = Convert.ToInt32(rows["PlayerID"]),
                     PlayerName = rows["PlayerName"].ToString(),
                     TeamName = rows["TeamName"].ToString(),
                     League = rows["League"].ToString(),
@@ -87,7 +140,6 @@ namespace WebApplication.Controllers
                     Height = Convert.ToInt32(rows["Height"]),
                     Weight = Convert.ToInt32(rows["Weight"]),
                 };
-
                 modelList.Add(Model);
             }
             return modelList;

@@ -1,19 +1,69 @@
-﻿@{
-    ViewBag.Title = "Contact";
+﻿@model WebApplication.Models.PlayerTeamModel
+@{
+    ViewBag.Title = "Edit";
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
 
-    <address>
-        One Microsoft Way<br />
-        Redmond, WA 98052-6399<br />
-        <abbr title="Phone">P:</abbr>
-        425.555.0100
-    </address>
+@using (Html.BeginForm("Edit", "Home", FormMethod.Post))
+{
+    <head>
+        <style>
+            /* 將物件排成兩列 */
+            .container {
+                display: flex;
+                flex-wrap: wrap;
+            }
 
-    <address>
-        <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-        <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-    </address>
-</main>
+            /* 每個物件佔據50%的寬度 */
+            .item {
+                width: 50%;
+                box-sizing: border-box; /* 避免寬度被內邊距和邊框撐大 */
+                padding: 10px; /* 可以根據需要調整內邊距 */
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <input type="text" name="txtSearchPlayerID" id="txtSearchPlayerID" placeholder="請輸入球員編號" />
+            <input type="submit" name="btnSubmit" value="Search" class="btn btn-primary" id="btnSearch" />
+        </div>
+        <div class="container">
+            <div class="item">
+                <label> 球員編號: </label>
+                <input type="text" name="PlayerID" id="PlayerID" value="@Model.PlayerID" readonly />
+            </div>
+            <div class="item">
+                <label> 隊伍名稱: </label>
+                <input type="text" name="TeamName" id="TeamName" value="@Model.TeamName" />
+            </div>
+            <div class="item">
+                <label>球員名稱: </label>
+                <input type="text" name="PlayerName" id="PlayerName" value="@Model.PlayerName" />
+            </div>
+            <div class="item">
+                <label>年齡: </label>
+                <input type="text" name="Age" id="Age" value="@Model.Age" />
+            </div>
+            <div class="item">
+                <label>身高: </label>
+                <input type="text" name="Height" id="Height" value="@Model.Height" />
+            </div>
+            <div class="item">
+                <label>體重: </label>
+                <input type="text" name="Weight" id="Weight" value="@Model.Weight" />
+            </div>
+        </div>
+        <div>
+            <input type="submit" name="btnSubmit" value="Edit" class="btn btn-success" id="btnEdit" />
+            <input type="submit" name="btnSubmit" value="Delete" class="btn btn-danger" id="btnDelete" />
+        </div>
+        <script>
+            var alertMessage = '@ViewBag.AlertMsg';
+        if (alertMessage !== '') {
+            alert(alertMessage);
+            }
+
+        </script>
+    </body>
+
+}
+
